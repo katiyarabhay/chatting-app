@@ -54,18 +54,20 @@ io.on('connection', async (socket) => {
     try {
       const db = await getDB();
       // Insert into database
-      const result = await db.run(
-        'INSERT INTO messages (sender_id, receiver_id, text) VALUES (?, ?, ?)',
-        [socket.user.id, receiver_id, text]
-      );
+      const { rows } = await db`
+        INSERT INTO messages (sender_id, receiver_id, text) 
+        VALUES (${socket.user.id}, ${receiver_id}, ${text})
+        RETURNING id, timestamp
+      `;
+      const inserted = rows[0];
       
       const messageToDeliver = {
-        id: result.lastID,
+        id: inserted.id,
         sender_id: socket.user.id,
         receiver_id: receiver_id,
         sender_username: socket.user.username,
         text: text,
-        timestamp: new Date().toISOString()
+        timestamp: inserted.timestamp
       };
       
       // Deliver to receiver if they are online

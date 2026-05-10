@@ -17,14 +17,15 @@ router.post('/register', async (req, res) => {
     const db = await getDB();
     
     // Check if user exists
-    const existingUser = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+    const { rows } = await db`SELECT * FROM users WHERE username = ${username}`;
+    const existingUser = rows[0];
     if (existingUser) {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
     // Hash password and insert
     const passwordHash = await bcrypt.hash(password, 10);
-    await db.run('INSERT INTO users (username, password_hash) VALUES (?, ?)', [username, passwordHash]);
+    await db`INSERT INTO users (username, password_hash) VALUES (${username}, ${passwordHash})`;
     
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
@@ -44,7 +45,8 @@ router.post('/login', async (req, res) => {
     const db = await getDB();
     
     // Find user
-    const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+    const { rows } = await db`SELECT * FROM users WHERE username = ${username}`;
+    const user = rows[0];
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }

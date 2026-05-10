@@ -11,15 +11,15 @@ router.get('/:contactId', authenticateToken, async (req, res) => {
     if (isNaN(contactId)) return res.status(400).json({ error: 'Invalid contact ID' });
 
     const db = await getDB();
-    const messages = await db.all(`
+    const { rows: messages } = await db`
       SELECT m.*, u.username as sender_username 
       FROM messages m
       JOIN users u ON m.sender_id = u.id
-      WHERE (m.sender_id = ? AND m.receiver_id = ?) 
-         OR (m.sender_id = ? AND m.receiver_id = ?)
+      WHERE (m.sender_id = ${req.user.id} AND m.receiver_id = ${contactId}) 
+         OR (m.sender_id = ${contactId} AND m.receiver_id = ${req.user.id})
       ORDER BY m.timestamp ASC
       LIMIT 200
-    `, [req.user.id, contactId, contactId, req.user.id]);
+    `;
     
     res.json(messages);
   } catch (error) {

@@ -1,40 +1,39 @@
-const sqlite3 = require('sqlite3');
-const { open } = require('sqlite');
+const { sql } = require('@vercel/postgres');
 
 async function getDB() {
-  const db = await open({
-    filename: './chat.db',
-    driver: sqlite3.Database
-  });
-
-  await db.exec(`
+  // Create tables if they don't exist
+  await sql`
     CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL
     );
+  `;
 
+  await sql`
     CREATE TABLE IF NOT EXISTS contacts (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL,
       contact_id INTEGER NOT NULL,
       UNIQUE(user_id, contact_id),
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (contact_id) REFERENCES users(id)
     );
+  `;
 
+  await sql`
     CREATE TABLE IF NOT EXISTS messages (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       sender_id INTEGER NOT NULL,
       receiver_id INTEGER NOT NULL,
       text TEXT NOT NULL,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+      timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (sender_id) REFERENCES users(id),
       FOREIGN KEY (receiver_id) REFERENCES users(id)
     );
-  `);
+  `;
 
-  return db;
+  return sql;
 }
 
 module.exports = { getDB };
