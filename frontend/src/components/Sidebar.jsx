@@ -8,7 +8,7 @@ function Sidebar({ token, selectedContact, setSelectedContact }) {
   // Fetch contacts
   const fetchContacts = async () => {
     try {
-      const res = await fetch(`http://${window.location.hostname}:3000/api/contacts`, {
+      const res = await fetch(`/_/backend/api/contacts`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -28,7 +28,7 @@ function Sidebar({ token, selectedContact, setSelectedContact }) {
     setError('');
 
     try {
-      const res = await fetch(`http://${window.location.hostname}:3000/api/contacts/add`, {
+      const res = await fetch(`/_/backend/api/contacts/add`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

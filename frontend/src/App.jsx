@@ -19,7 +19,8 @@ function App() {
   // Handle connection
   useEffect(() => {
     if (token && username) {
-      const newSocket = io(`http://${window.location.hostname}:3000`, {
+      const newSocket = io('/', {
+        path: '/_/backend/socket.io',
         auth: { token }
       });
 

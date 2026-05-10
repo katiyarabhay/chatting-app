@@ -16,7 +16,7 @@ function AuthForm({ onLogin }) {
     
     try {
       // Using window.location.hostname to construct API URL
-      const response = await fetch(`http://${window.location.hostname}:3000${endpoint}`, {
+      const response = await fetch(`/_/backend${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

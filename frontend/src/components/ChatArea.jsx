@@ -19,7 +19,7 @@ function ChatArea({ socket, selectedContact, token, currentUserId }) {
 
     const fetchHistory = async () => {
       try {
-        const res = await fetch(`http://${window.location.hostname}:3000/api/messages/${selectedContact.id}`, {
+        const res = await fetch(`/_/backend/api/messages/${selectedContact.id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
