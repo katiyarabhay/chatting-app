@@ -87,6 +87,11 @@ io.on('connection', async (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', async () => {
-  await getDB();
+  try {
+    await getDB();
+    console.log(`Database connected successfully.`);
+  } catch (error) {
+    console.error(`Failed to initialize database on startup. Make sure your Neon database is connected correctly.`);
+  }
   console.log(`Backend server running on port ${PORT}`);
 });

@@ -5,10 +5,11 @@ let initialized = false;
 
 async function getDB() {
   if (!sqlWrapper) {
-    if (!process.env.DATABASE_URL) {
-      throw new Error("Missing DATABASE_URL. Please link the Neon database in your Vercel Dashboard.");
+    const dbUrl = process.env.DATABASE_URL || process.env.STORAGE_URL;
+    if (!dbUrl) {
+      throw new Error("Missing DATABASE_URL or STORAGE_URL. Please link the Neon database in your Vercel Dashboard.");
     }
-    const sql = neon(process.env.DATABASE_URL);
+    const sql = neon(dbUrl);
     
     // Wrap the neon function so it returns { rows } to match our existing code
     sqlWrapper = async (strings, ...values) => {
