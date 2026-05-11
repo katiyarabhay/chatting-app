@@ -14,7 +14,7 @@ async function getDB() {
     // Wrap the neon function so it returns { rows } to match our existing code
     sqlWrapper = async (strings, ...values) => {
       const result = await sql(strings, ...values);
-      return { rows: result };
+      return { rows: result }; // neon already returns the rows array directly
     };
   }
 
