@@ -17,7 +17,7 @@ router.get('/', authenticateToken, async (req, res) => {
     res.json(contacts);
   } catch (error) {
     console.error('Error fetching contacts:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
@@ -47,7 +47,7 @@ router.post('/add', authenticateToken, async (req, res) => {
     res.status(201).json(contactUser);
   } catch (error) {
     console.error('Error adding contact:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message || 'Internal server error' });
   }
 });
 
